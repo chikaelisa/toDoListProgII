@@ -3,7 +3,7 @@
 
 int main() {
 
-    olamundo();
+    inicio(0); //Inicia o programa
 
     return 0;
 }
