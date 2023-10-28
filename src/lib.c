@@ -148,11 +148,6 @@ int usuarioEstaCadastrado(Usuario usuario) {
     return 0;
 }
 
-void tarefas(int opcao)
-{
-
-}
-
 void removeCaracterString(char *string)
 {
     //Lê a quantidade de caracteres da string

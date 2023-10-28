@@ -15,6 +15,4 @@ int loginUsuario(Usuario usuario);
 int usuarioEstaCadastrado(Usuario usuario);
 void tarefas(int opcao);
 void removeCaracterString(char *string);
-void ola();
-
 #endif //headers
