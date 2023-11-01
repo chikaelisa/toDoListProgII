@@ -1,10 +1,10 @@
-#include "headers.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include "autenticar.h"
 
-char caminhoAutenticar[25] = "cadastro\\logins.txt";
+char caminhoAutenticar[25] = "arqCadastro\\logins.txt";
 
 void inicio(int opcao) {
     
@@ -17,6 +17,7 @@ void inicio(int opcao) {
             printf("Por favor, autentique-se:\n");
             printf("1 - Cadastro\n");
             printf("2 - Login\n");
+            printf("3 - Sair\n");
             printf("Digite sua opcao: ");
             scanf("%d", &opcao);
             setbuf(stdin, NULL);
@@ -50,6 +51,10 @@ void inicio(int opcao) {
                 fgets(usuario.senha, 50, stdin);
                 setbuf(stdin, NULL);
             } while (!loginUsuario(usuario));
+            return;
+            break;
+        case 3:
+            exit(1);
             break;
         default:
             printf("Opcao invalida!\n");
@@ -67,7 +72,6 @@ int cadastrarUsuario(Usuario usuario) {
     {
         cadastro = fopen(caminhoAutenticar, "w");
         fprintf(cadastro, "%s", "Usuario Senha");
-        fclose(cadastro);
         cadastro = fopen(caminhoAutenticar, "a");
         fprintf(cadastro, "%s %s\n", usuario.username, usuario.senha);
     }
@@ -85,46 +89,55 @@ int loginUsuario(Usuario usuario)
 {
     FILE *usuarios = fopen(caminhoAutenticar, "r");
 
-    char caminhoTarefa[65];
-    strcpy(caminhoTarefa, "tarefas\\");
-    strcat(caminhoTarefa, usuario.username);
-    strcat(caminhoTarefa, ".txt");
-
-    char credencial[100];
-    strcpy(credencial, usuario.username);
-    strcat(credencial, " ");
-    strcat(credencial, usuario.senha);
-
-    char linha[100];
-
-    while(fgets(linha, 100, usuarios) != NULL)
+    if (usuarios == NULL)
     {
-        if (strcmp(linha, credencial) == 0)
-        {
-            FILE *arquivosUsuario = fopen(caminhoTarefa, "a");
+        printf("Nao foi possivel encontrar o arquivo de cadastro\n\n");
+        inicio(0);
+        return 2;
+    }
+    else
+    {
+        char caminhoTarefa[65];
+        strcpy(caminhoTarefa, "arqUsuario\\");
+        strcat(caminhoTarefa, usuario.username);
+        strcat(caminhoTarefa, ".txt");
 
-            if (arquivosUsuario == NULL)
+        char credencial[100];
+        strcpy(credencial, usuario.username);
+        strcat(credencial, " ");
+        strcat(credencial, usuario.senha);
+
+        char linha[100];
+
+        while(fgets(linha, 100, usuarios) != NULL)
+        {
+            if (strcmp(linha, credencial) == 0)
             {
-                fprintf(arquivosUsuario, "w");
-                printf("Login realizado com sucesso!\n\n");
+                FILE *arquivosUsuario = fopen(caminhoTarefa, "a");
+
+                if (arquivosUsuario == NULL)
+                {
+                    fprintf(arquivosUsuario, "w");
+                    printf("Login realizado com sucesso!\n\n");
+                }
+                else
+                {
+                    printf("Login realizado com sucesso!\n\n");
+                    printf("Bem-vindo(a), %s.\n", usuario.username);
+                }         
+            
+                fclose(arquivosUsuario);
+
+                return 1;   
             }
             else
             {
-                printf("Login realizado com sucesso!\n\n");
-                printf("Bem-vindo(a), %s", usuario.username);
-            }   
-            
-            return 1;   
+                printf("Nao foi possivel realizar o login\n\n");
+                printf("Verifique suas informacoes e tente novamente\n\n");
+                return 0;
+            }
         }
-        else
-        {
-            printf("Nao foi possivel realizar o login\n\n");
-            printf("Verifique suas informacoes e tente novamente\n\n");
-            return 0;
-        }
-        
     }
-
 }
 
 int usuarioEstaCadastrado(Usuario usuario) {

@@ -1,5 +1,5 @@
-#ifndef headers // Evitar inclusões múltiplas acidentais
-#define headers
+#ifndef autenticar // Evitar inclusões múltiplas acidentais
+#define autenticar
 
 struct Usuario
 {
@@ -13,6 +13,6 @@ void inicio(int opcao);
 int cadastrarUsuario(Usuario usuario);
 int loginUsuario(Usuario usuario);
 int usuarioEstaCadastrado(Usuario usuario);
-void tarefas(int opcao);
 void removeCaracterString(char *string);
-#endif //headers
+
+#endif //autenticar
