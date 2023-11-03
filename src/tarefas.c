@@ -1,94 +1,97 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "tarefas.h"
+#include "autenticar.h"
 
-void iniciarTarefas(int opcao)
+void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
 {
-
     Tarefa tarefa;
-  
-    consultarTarefas(0);
+    strcpy(caminhoLogin, usuarioLogin);
 
     switch (opcao)
     {
       case 0:
-        printf("\nO que voce deseja fazer?\n");
-        printf("1 - Listar tarefas\n");
-        printf("2 - Cadastrar tarefa\n");
-        printf("3 - Excluir tarefa\n");
-        printf("4 - Atualizar tarefa\n");
-        printf("5 - Fechar programa\n");
-        printf("Digite sua opcao: ");
-        scanf("%d", &opcao);
-        setbuf(stdin, NULL);
-        iniciarTarefas(opcao);
+        printf("\nSuas tarefas:\n");
+        consultarTarefas(obtemCaminho(caminhoLogin));
+        printf("\n");
+        iniciarTarefas(1, usuarioLogin, caminhoLogin);
         return;
         break;
       case 1:
-        printf("\n** CONSULTA DE TAREFA **\n\n");
-        printf("Digite o tipo de status da tarefa: ");
+        printf("╔════════════════════════════════════════╗\n");
+        printf("║              MENU DE OPCOES            ║\n");
+        printf("╚════════════════════════════════════════╝\n");
+        printf("(1) - Listar tarefas\n");
+        printf("(2) - Cadastrar tarefa\n");
+        printf("(3) - Excluir tarefa\n");
+        printf("(4) - Atualizar tarefa\n");
+        printf("(5) - Sair\n");
+        printf("\nDigite sua opcao: ");
         scanf("%d", &opcao);
-        consultarTarefas(opcao);
-        iniciarTarefas(0);
+        system("cls");
+        setbuf(stdin, NULL);
+        printf("\n");
+        iniciarTarefas(opcao+1, usuarioLogin, caminhoLogin);
         return;
         break;
       case 2:
-        printf("\n** CADASTRO DE TAREFA **\n\n");
-        printf("Informe um ID para a tarefa (numero): ");
-        scanf("%d", &tarefa.id);
-        setbuf(stdin, NULL);
+        printf("╔════════════════════════════════════════╗\n");
+        printf("║            CONSULTA DE TAREFAS         ║\n");
+        printf("╚════════════════════════════════════════╝\n");
+        consultarTarefas(obtemCaminho(caminhoLogin));
+        printf("\n");
+        iniciarTarefas(1, usuarioLogin, caminhoLogin);
+        return;
+        break;
+      case 3:
+        printf("╔════════════════════════════════════════╗\n");
+        printf("║            CADASTRO DE TAREFA          ║\n");
+        printf("╚════════════════════════════════════════╝\n");
         printf("Informe a descricao da tarefa: ");
         fgets(tarefa.descricao, 150, stdin);
         retiraCaracterString(tarefa.descricao);
-        cadastrarTarefa(tarefa);
-        iniciarTarefas(0);
+        cadastrarTarefa(tarefa, obtemCaminho(caminhoLogin));
+        iniciarTarefas(1, usuarioLogin, caminhoLogin);
         return;
         break;
       case 4:
+        break;
       case 5:
         exit(1);
+        return;
         break;
       default:
         break;
     }
 }
 
-int cadastrarTarefa(Tarefa tarefa)
+int cadastrarTarefa(Tarefa tarefa, char caminho[])
 {
-    char caminho[65];
     tarefa.status = 0;
-    strcpy(caminho, "arqUsuario\\Enzo.txt");
     FILE *caminhoTarefas = fopen(caminho, "a");
-    fprintf(caminhoTarefas, "%d - %s %d\n", tarefa.id, tarefa.descricao, tarefa.status);
-    fprintf(caminhoTarefas, "");
+    FILE *ultimaTarefaId = fopen(caminho, "r");
+    tarefa.id = obtemUltimoIdTarefas(ultimaTarefaId);
+    fprintf(caminhoTarefas, "%c - %s %d\n", tarefa.id, tarefa.descricao, tarefa.status);
     fclose(caminhoTarefas);
-    printf("Tarefa cadastrada com sucesso!\n");
+    printf("Tarefa cadastrada com sucesso!\n\n");
     return 1;
 }
 
-void consultarTarefas(int status)
+void consultarTarefas(char caminho[])
 {
-    char caminho[65];
     char linha[150];
-    int controle = 0;
-    strcpy(caminho, "arqUsuario\\Enzo.txt");
+    char ultimoId;
+    int controle = 0, ultimoIndice = 0;
     FILE *caminhoConsultarTarefa = fopen(caminho, "r");
 
     while(fgets(linha, 150, caminhoConsultarTarefa) != NULL)
     {
-        int ultimoIndice = obtemUltimoIndiceString(linha);
-        if (status == 0)
-        {
-            if (linha[ultimoIndice] == '0')
-              printf("%.*s ( )\n", ultimoIndice-1, linha);
-        }
-        else
-        {
-            if (linha[ultimoIndice] == '1')
-              printf("%.*s ( X )\n", ultimoIndice-1, linha);
-        }
+        ultimoIndice = obtemUltimoIndiceString(linha);
+        if (linha[ultimoIndice] == '0')
+            printf("%.*s ( )\n", ultimoIndice-1, linha);
+        if (linha[ultimoIndice] == '1')
+            printf("%.*s (X)\n", ultimoIndice-1, linha);
         controle = 1;
     }
 
@@ -123,13 +126,30 @@ int obtemUltimoIndiceString(char *string)
     return n;
 }
 
-/*
-char* obtemCaminho(char *usuario)
+char obtemUltimoIdTarefas(FILE *arquivo)
+{
+    char linha[150];
+    char ultimoId;
+    int controle = 0;
+
+    while(fgets(linha, 150, arquivo) != NULL)
+    {
+        ultimoId = linha[0];
+        controle = 1;
+    }
+    
+    if (!controle)
+        return '1';
+
+    return ultimoId+1;
+}
+
+
+char* obtemCaminho(char *username)
 {
     char *caminhoTarefa = (char*) malloc(65 * sizeof(char));
     strcpy(caminhoTarefa, "arqUsuario\\");
-    strcat(caminhoTarefa, usuario);
+    strcat(caminhoTarefa, username);
     strcat(caminhoTarefa, ".txt");
     return caminhoTarefa;
 }
-*/

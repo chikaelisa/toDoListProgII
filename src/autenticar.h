@@ -9,7 +9,7 @@ struct Usuario
 typedef struct Usuario Usuario;
 
 // Protótipo de função
-void inicio(int opcao);
+void inicio(int opcao, char *usuarioLogin);
 int cadastrarUsuario(Usuario usuario);
 int loginUsuario(Usuario usuario);
 int usuarioEstaCadastrado(Usuario usuario);

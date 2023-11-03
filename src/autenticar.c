@@ -1,47 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <locale.h>
 #include "autenticar.h"
 
 char caminhoAutenticar[25] = "arqCadastro\\logins.txt";
+char *username;
 
-void inicio(int opcao) {
+void inicio(int opcao, char *usuarioLogin) {
     
     Usuario usuario;
+    username = usuarioLogin;
 
     switch (opcao)
     {
         case 0:
-            printf("Ola! Seja bem-vindo(a) ao sistema de tarefas\n");
-            printf("Por favor, autentique-se:\n");
-            printf("1 - Cadastro\n");
-            printf("2 - Login\n");
-            printf("3 - Sair\n");
+            printf("Por favor, escolha uma opcao:\n");
+            printf("(1) - Cadastro\n");
+            printf("(2) - Login\n");
+            printf("(3) - Sair\n");
             printf("Digite sua opcao: ");
             scanf("%d", &opcao);
             setbuf(stdin, NULL);
-            inicio(opcao);
+            printf("\n");
+            inicio(opcao, username);
             break;
         case 1:
-            printf("\n** CADASTRO DE USUARIO **\n\n");
+            printf("╔════════════════════════════════════════╗\n");
+            printf("║            CADASTRO DE USUARIO         ║\n");
+            printf("╚════════════════════════════════════════╝\n");
             do
             {
                 printf("Digite o seu username: ");
                 fgets(usuario.username, 50, stdin);
                 setbuf(stdin, NULL);
+                removeCaracterString(usuario.username);
             } while (usuarioEstaCadastrado(usuario));
             printf("Digite sua senha: ");
             fgets(usuario.senha, 50, stdin);
-            removeCaracterString(usuario.username);
+            removeCaracterString(usuario.senha);
             if (cadastrarUsuario(usuario))
             {
-                inicio(0);
+                inicio(0, username);
                 return;
             }
             break;
         case 2:
-            printf("\n** LOGIN DE USUARIO **\n\n");
+            printf("╔════════════════════════════════════════╗\n");
+            printf("║             LOGIN DE USUARIO           ║\n");
+            printf("╚════════════════════════════════════════╝\n");
             do
             {
                 printf("Digite o seu username: ");
@@ -51,6 +57,7 @@ void inicio(int opcao) {
                 fgets(usuario.senha, 50, stdin);
                 setbuf(stdin, NULL);
             } while (!loginUsuario(usuario));
+            strcpy(username, usuario.username); 
             return;
             break;
         case 3:
@@ -58,7 +65,7 @@ void inicio(int opcao) {
             break;
         default:
             printf("Opcao invalida!\n");
-            inicio(0);
+            inicio(0, username);
             return;
             break;
     }
@@ -71,7 +78,7 @@ int cadastrarUsuario(Usuario usuario) {
     if (caminhoAutenticar == NULL)
     {
         cadastro = fopen(caminhoAutenticar, "w");
-        fprintf(cadastro, "%s", "Usuario Senha");
+
         cadastro = fopen(caminhoAutenticar, "a");
         fprintf(cadastro, "%s %s\n", usuario.username, usuario.senha);
     }
@@ -92,7 +99,7 @@ int loginUsuario(Usuario usuario)
     if (usuarios == NULL)
     {
         printf("Nao foi possivel encontrar o arquivo de cadastro\n\n");
-        inicio(0);
+        inicio(0, username);
         return 2;
     }
     else
@@ -118,10 +125,12 @@ int loginUsuario(Usuario usuario)
                 if (arquivosUsuario == NULL)
                 {
                     fprintf(arquivosUsuario, "w");
+                    system("cls");
                     printf("Login realizado com sucesso!\n\n");
                 }
                 else
                 {
+                    system("cls");
                     printf("Login realizado com sucesso!\n\n");
                     printf("Bem-vindo(a), %s.\n", usuario.username);
                 }         
@@ -130,13 +139,11 @@ int loginUsuario(Usuario usuario)
 
                 return 1;   
             }
-            else
-            {
-                printf("Nao foi possivel realizar o login\n\n");
-                printf("Verifique suas informacoes e tente novamente\n\n");
-                return 0;
-            }
         }
+
+        printf("Nao foi possivel realizar o login\n\n");
+        printf("Verifique suas informacoes e tente novamente\n\n");
+        return 0;
     }
 }
 
@@ -144,11 +151,11 @@ int usuarioEstaCadastrado(Usuario usuario) {
 
     FILE *usuarios = fopen(caminhoAutenticar, "r");
 
-    char linha[50];
+    char linha[100];
     
-    while(fgets(linha, 50, usuarios) != NULL)
-    {
-        if (strcmp(linha, usuario.username) == 1)
+    while(fgets(linha, 100, usuarios) != NULL)
+    {  
+        if (strstr(linha, usuario.username) != NULL)
         {
             fclose(usuarios);
             printf("Ja existe um usuario com esse username cadastrado!\n\n");

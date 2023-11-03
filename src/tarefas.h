@@ -3,16 +3,18 @@
 
 struct Tarefa
 {
-    int id;
+    char id;
     char descricao[150];
     int status;
 };
 typedef struct Tarefa Tarefa;
 
-void iniciarTarefas(int opcao);
-void consultarTarefas(int status);
-int cadastrarTarefa(Tarefa tarefa);
+void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[]);
+void consultarTarefas(char caminho[]);
+int cadastrarTarefa(Tarefa tarefa, char caminho[]);
 void retiraCaracterString(char *string);
 int obtemUltimoIndiceString(char *string);
+char obtemUltimoIdTarefas(FILE *arquivo);
+char* obtemCaminho(char *username);
 
 #endif //autenticar
