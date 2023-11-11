@@ -69,7 +69,7 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
   case 6:
     exit(1);
   default:
-    printf("Opção inválida, por favor, escolha um item do menu");
+    printf("Opção inválida, por favor, escolha um item do menu\n\n");
     iniciarTarefas(1, usuarioLogin, caminhoLogin);
     break;
   }
