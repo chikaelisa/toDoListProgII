@@ -3,7 +3,7 @@
 #include <string.h>
 #include "autenticar.h"
 
-char caminhoAutenticar[25] = "arqCadastro\\logins.txt";
+char caminhoAutenticar[25] = "arqCadastro/logins.txt";
 char *username;
 
 void inicio(int opcao, char *usuarioLogin) {
@@ -75,7 +75,7 @@ int cadastrarUsuario(Usuario usuario) {
 
     FILE *cadastro = fopen(caminhoAutenticar, "a");
 
-    if (caminhoAutenticar == NULL)
+    if (cadastro == NULL)
     {
         cadastro = fopen(caminhoAutenticar, "w");
 
@@ -104,11 +104,10 @@ int loginUsuario(Usuario usuario)
     }
     else
     {
-        char caminhoTarefa[65];
-        strcpy(caminhoTarefa, "arqUsuario\\");
+        char caminhoTarefa[65] = "arqUsuario/";
         strcat(caminhoTarefa, usuario.username);
         strcat(caminhoTarefa, ".txt");
-
+        
         char credencial[100];
         strcpy(credencial, usuario.username);
         strcat(credencial, " ");
@@ -125,12 +124,12 @@ int loginUsuario(Usuario usuario)
                 if (arquivosUsuario == NULL)
                 {
                     fprintf(arquivosUsuario, "w");
-                    system("cls");
+                    system("clear");
                     printf("Login realizado com sucesso!\n\n");
                 }
                 else
                 {
-                    system("cls");
+                    system("clear");
                     printf("Login realizado com sucesso!\n\n");
                     printf("Bem-vindo(a), %s.\n", usuario.username);
                 }         
