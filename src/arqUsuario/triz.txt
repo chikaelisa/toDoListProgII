@@ -1,4 +1,6 @@
-1 - Marcar consulta 0
+1 - Marcar consulta 1
 2 - Fazer o projeto 0
-3 - Fazer compras 0
-4 - Fazer almoco 0
+3 - Fazer compras 1
+4 - Fazer almoco 1
+5 - terminar trabalho 0
+6 - fazer push da tarefa 0

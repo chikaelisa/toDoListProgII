@@ -16,6 +16,6 @@ void retiraCaracterString(char *string);
 int obtemUltimoIndiceString(char *string);
 char obtemUltimoIdTarefas(FILE *arquivo);
 char* obtemCaminho(char *username);
-void alterarTarefa(char caminho[]);
+int alterarTarefa(char caminho[]);
 
 #endif //autenticar
