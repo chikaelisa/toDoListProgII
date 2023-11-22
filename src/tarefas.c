@@ -12,6 +12,7 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
   switch (opcao)
   {
   case 0:
+   // system("clear");
     printf("\nSuas tarefas:\n");
     consultarTarefas(obtemCaminho(caminhoLogin));
     printf("\n");
@@ -19,23 +20,26 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     return;
     break;
   case 1:
+   // system("clear");
     printf("╔════════════════════════════════════════╗\n");
     printf("║                  MENU                  ║\n");
     printf("╚════════════════════════════════════════╝\n");
     printf("(1) - Listar tarefas\n");
     printf("(2) - Cadastrar tarefa\n");
-    printf("(3) - Excluir tarefa\n");
-    printf("(4) - Atualizar tarefa\n");
+    printf("(3) - Atualizar tarefa\n");
+    printf("(4) - Excluir tarefa\n");
     printf("(5) - Sair\n");
     printf("\nDigite sua opcao: ");
     scanf("%d", &opcao);
-    system("clear");
+   system("clear");
     setbuf(stdin, NULL);
     printf("\n");
     iniciarTarefas(opcao + 1, usuarioLogin, caminhoLogin);
     return;
     break;
   case 2:
+   system("clear");
+    printf("\n");
     printf("╔════════════════════════════════════════╗\n");
     printf("║            CONSULTA DE TAREFAS         ║\n");
     printf("╚════════════════════════════════════════╝\n");
@@ -45,6 +49,7 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     return;
     break;
   case 3:
+   system("clear");
     printf("╔════════════════════════════════════════╗\n");
     printf("║            CADASTRO DE TAREFA          ║\n");
     printf("╚════════════════════════════════════════╝\n");
@@ -56,17 +61,24 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     return;
     break;
   case 4:
-
-    printf("Você selecionou a opção 3, estamos trabalhando nela! Em breve\n\n");
-    iniciarTarefas(1, usuarioLogin, caminhoLogin);
+   system("clear");
+    printf("╔════════════════════════════════════════╗\n");
+    printf("║            ATUALIZAR TAREFAS           ║\n");
+    printf("╚════════════════════════════════════════╝\n");
+   alterarTarefa(obtemCaminho(caminhoLogin));
+    // printf("Você selecionou a opção 3, estamos trabalhando nela! Em breve\n\n");
+    // iniciarTarefas(1, usuarioLogin, caminhoLogin);
     return;
     break;
   case 5:
+   system("clear");
     printf("Você selecionou a opção 4, estamos trabalhando nela! Em breve\n\n");
     iniciarTarefas(1, usuarioLogin, caminhoLogin);
     return;
     break;
   case 6:
+   system("clear");
+    printf("Agradecemos por utilizar o gerenciador de tarefas. Até a próxima!\n\n");
     exit(1);
   default:
     printf("Opção inválida, por favor, escolha um item do menu\n\n");
@@ -90,7 +102,6 @@ int cadastrarTarefa(Tarefa tarefa, char caminho[])
 void consultarTarefas(char caminho[])
 {
   char linha[150];
-  char ultimoId;
   int controle = 0, ultimoIndice = 0;
   FILE *caminhoConsultarTarefa = fopen(caminho, "r");
 
@@ -160,4 +171,35 @@ char *obtemCaminho(char *username)
   strcat(caminhoTarefa, username);
   strcat(caminhoTarefa, ".txt");
   return caminhoTarefa;
+}
+
+void alterarTarefa(char caminho[]) 
+{
+  char linha[150];
+  char idBusca;
+  int idEncontrado = 0;
+  FILE *caminhoConsultarTarefa = fopen(caminho, "r");
+
+  
+  if (caminhoConsultarTarefa == NULL)
+  {
+    printf("Houve um problema para abrir o arquivo de tarefas. Tente novamente ou reinicie o programa. \n");
+    return;
+  }
+
+  printf("Digite o numero da tarefa que deseja alterar:\n");
+  
+  scanf("%c", &idBusca);
+
+  while (fgets(linha, 150, caminhoConsultarTarefa) != NULL)
+  {
+    if(linha[0] == idBusca)
+      break;
+  }
+
+  printf("DEBUG: Linha fora do laço: %s\n", linha);
+
+  fclose(caminhoConsultarTarefa);
+
+
 }

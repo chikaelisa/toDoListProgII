@@ -19,12 +19,14 @@ void inicio(int opcao, char *usuarioLogin) {
             printf("(2) - Login\n");
             printf("(3) - Sair\n");
             printf("Digite sua opcao: ");
-            scanf("%d", &opcao);
+            scanf("%d", &opcao); // retorna para essa função com a escolha do usuario
             setbuf(stdin, NULL);
             printf("\n");
+
             inicio(opcao, username);
             break;
         case 1:
+            system("clear");
             printf("╔════════════════════════════════════════╗\n");
             printf("║            CADASTRO DE USUARIO         ║\n");
             printf("╚════════════════════════════════════════╝\n");
@@ -45,6 +47,7 @@ void inicio(int opcao, char *usuarioLogin) {
             }
             break;
         case 2:
+            system("clear");
             printf("╔════════════════════════════════════════╗\n");
             printf("║             LOGIN DE USUARIO           ║\n");
             printf("╚════════════════════════════════════════╝\n");
@@ -64,6 +67,7 @@ void inicio(int opcao, char *usuarioLogin) {
             exit(1);
             break;
         default:
+            system("clear");
             printf("Opcao invalida!\n");
             inicio(0, username);
             return;
@@ -126,6 +130,7 @@ int loginUsuario(Usuario usuario)
                     fprintf(arquivosUsuario, "w");
                     system("clear");
                     printf("Login realizado com sucesso!\n\n");
+                    printf("Bem-vindo(a), %s.\n", usuario.username);
                 }
                 else
                 {
