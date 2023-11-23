@@ -11,29 +11,29 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
 
   switch (opcao)
   {
-    case 0:
-      system("clear");
-      printf("\nSuas tarefas:\n");
-      consultarTarefas(obtemCaminho(caminhoLogin));
-      printf("\n");
-      iniciarTarefas(1, usuarioLogin, caminhoLogin);
-      return;
-    case 1:
-      printf("╔════════════════════════════════════════╗\n");
-      printf("║                  MENU                  ║\n");
-      printf("╚════════════════════════════════════════╝\n");
-      printf("(1) - Listar tarefas\n");
-      printf("(2) - Cadastrar tarefa\n");
-      printf("(3) - Atualizar tarefa\n");
-      printf("(4) - Excluir tarefa\n");
-      printf("(5) - Sair\n");
-      printf("\nDigite sua opcao: ");
-      scanf("%d", &opcao);
-      system("clear");
-      setbuf(stdin, NULL);
-      printf("\n");
-      iniciarTarefas(opcao + 1, usuarioLogin, caminhoLogin);
-      return;
+  case 0:
+    system("clear");
+    printf("\nSuas tarefas:\n");
+    consultarTarefas(obtemCaminho(caminhoLogin));
+    printf("\n");
+    iniciarTarefas(1, usuarioLogin, caminhoLogin);
+    return;
+  case 1:
+    printf("╔════════════════════════════════════════╗\n");
+    printf("║                  MENU                  ║\n");
+    printf("╚════════════════════════════════════════╝\n");
+    printf("(1) - Listar tarefas\n");
+    printf("(2) - Cadastrar tarefa\n");
+    printf("(3) - Atualizar tarefa\n");
+    printf("(4) - Excluir tarefa\n");
+    printf("(5) - Sair\n");
+    printf("\nDigite sua opcao: ");
+    scanf("%d", &opcao);
+    system("clear");
+    setbuf(stdin, NULL);
+    printf("\n");
+    iniciarTarefas(opcao + 1, usuarioLogin, caminhoLogin);
+    return;
   case 2:
     printf("\n");
     printf("╔════════════════════════════════════════╗\n");
@@ -59,12 +59,16 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     printf("╚════════════════════════════════════════╝\n");
     consultarTarefas(obtemCaminho(caminhoLogin));
     // alterarTarefa(obtemCaminho(caminhoLogin));
-    if (alterarTarefa(obtemCaminho(caminhoLogin))) {
+    if (alterarTarefa(obtemCaminho(caminhoLogin)))
+    {
+      printf("Tarefa atualizada com sucesso!!!\n");
       iniciarTarefas(2, usuarioLogin, caminhoLogin); // se deu tudo certo, consulta novamente as tarefas para mostrar a tarefa marcada como feita
-    } else {
+    }
+    else
+    {
       printf("Nao foi possivel alterar a tarefa\n");
-      iniciarTarefas(1, usuarioLogin, caminhoLogin); // se ocorreu algum erro, retorna ao menu. 
-    };
+      iniciarTarefas(1, usuarioLogin, caminhoLogin); // se ocorreu algum erro, retorna ao menu.
+    }
     return;
   case 5:
     system("clear");
@@ -134,11 +138,11 @@ int obtemUltimoIndiceString(char *string)
   int n = strlen(string);
 
   if (string[n - 1] == '\n')
-    n -= 2; //Decrementa 2 para obter o ultimo caracter útil (retira da contagem o '\0' e '\n'), o status da tarefa está nessa posição
+    n -= 2; // Decrementa 2 para obter o ultimo caracter útil (retira da contagem o '\0' e '\n'), o status da tarefa está nessa posição
   else
-    n -= 1; //Decrementa 1 para obter o ultimo caracter útil (retira da contagem o '\0'), o status da tarefa está nessa posição
+    n -= 1; // Decrementa 1 para obter o ultimo caracter útil (retira da contagem o '\0'), o status da tarefa está nessa posição
 
-  return n; //Posição do status da tarefa -> Retorna a última posição últil
+  return n; // Posição do status da tarefa -> Retorna a última posição últil
 }
 
 char obtemUltimoIdTarefas(FILE *arquivo)
@@ -177,24 +181,24 @@ int alterarTarefa(char caminho[])
   FILE *arquivoTarefas = fopen(caminho, "r");
   FILE *arquivoTemporario;
 
-  if (arquivoTarefas == NULL) //Verifica se o arquivo foi aberto corretamente
+  if (arquivoTarefas == NULL) // Verifica se o arquivo foi aberto corretamente
   {
     printf("Houve um problema para abrir o arquivo de tarefas. Tente novamente ou reinicie o programa. \n");
     return 0;
   }
 
-  printf("Digite o numero da tarefa que deseja alterar:\n");
+  printf("\n\nDigite o numero da tarefa que deseja alterar:\n");
 
   scanf("%c", &idBusca);
 
-  while (fgets(tarefaAlterar, 150, arquivoTarefas) != NULL) //Percorre linha por linha do arquivo
+  while (fgets(tarefaAlterar, 150, arquivoTarefas) != NULL) // Percorre linha por linha do arquivo
   {
     if (tarefaAlterar[0] == idBusca) // tarefaAlterar[0] -> Corresponde ao ID que sempre estará nessa posição
     {
       idEncontrado = 1;
       break;
     }
-    linhaAlvo++; //Incrementa para salvar o número da linha que está o ID
+    linhaAlvo++; // Incrementa para salvar o número da linha que está o ID
   }
   if (!idEncontrado)
   {
@@ -204,28 +208,33 @@ int alterarTarefa(char caminho[])
   }
   fclose(arquivoTarefas);
 
-  printf("Essa é a tarefa que você deseja alterar:\n %s\n", tarefaAlterar);
+  printf("\n\nEssa é a tarefa que você deseja alterar:\n %s\n", tarefaAlterar);
 
-  printf("O que você deseja fazer?\n\n");
+  printf("\n\nO que você deseja fazer?\n\n");
   printf("(1) - Marcar como feita\n");
-  printf("(2) - Corrigir texto\n");
+  printf("(2) - Alterar descrição\n");
 
   printf("\nDigite sua opção: ");
 
   scanf("%d", &opcao);
 
+  getchar(); // para remover o \n do buffer
+
+// ---- bloco de variáveis que vou usar no switch
   int n = obtemUltimoIndiceString(tarefaAlterar);
   int numLinha = 0;
-  char linhaTemp[100];
+  char linhaTemp[150];
+  Tarefa tarefaCorrigida;
+  char tarefaAlterada[150];
 
   switch (opcao)
   {
   case 1:
-    if (tarefaAlterar[n] == '0') //n -> posição da string que contém o status
+    if (tarefaAlterar[n] == '0') // n -> posição da string que contém o status
     {
       tarefaAlterar[n] = '1';
       arquivoTarefas = fopen(caminho, "r");
-      arquivoTemporario = fopen("arqUsuario/temp.txt", "w"); //Cria um arquivo temporário que receberá as tarefas existentes
+      arquivoTemporario = fopen("arqUsuario/temp.txt", "w"); // Cria um arquivo temporário que receberá as tarefas existentes
 
       if (arquivoTemporario == NULL || arquivoTarefas == NULL)
       {
@@ -233,14 +242,14 @@ int alterarTarefa(char caminho[])
         return 0;
       }
 
-      while (fgets(linhaTemp, 150, arquivoTarefas) != NULL) //Lendo linha por linha do arquivo já existe do usuário e salvando no arquivo temporário
+      while (fgets(linhaTemp, 150, arquivoTarefas) != NULL) // Lendo linha por linha do arquivo já existe do usuário e salvando no arquivo temporário
       {
-        if (numLinha == linhaAlvo) //Se estiver na linha alvo (linha da tarefa que será alterada)
-          fprintf(arquivoTemporario, "%s", tarefaAlterar); //Arquivo temporário grava nessa linha a tarefa com o novo status
+        if (numLinha == linhaAlvo)                         // Se estiver na linha alvo (linha da tarefa que será alterada)
+          fprintf(arquivoTemporario, "%s", tarefaAlterar); // Arquivo temporário grava nessa linha a tarefa com o novo status
         else
-          fprintf(arquivoTemporario, "%s", linhaTemp); //Arquivo temporário faz uma cópia da linha que está lendo no arquivo original
+          fprintf(arquivoTemporario, "%s", linhaTemp); // Arquivo temporário faz uma cópia da linha que está lendo no arquivo original
 
-        numLinha++; //Incrementa o número da linha
+        numLinha++; // Incrementa o número da linha
       }
 
       fclose(arquivoTarefas);
@@ -257,24 +266,60 @@ int alterarTarefa(char caminho[])
         printf("Erro ao renomear arquivo\n");
         return 0;
       }
-    } else { // Se o status da tarefa não for 0, a tarefa está feita
+      return 1;
+    }
+    else
+    { // Se o status da tarefa não for 0, a tarefa está feita
       printf("Tarefa já está marcada como feita!\n");
       return 1;
     }
+    break;
 
-  case 2: 
-    printf("\n\n !!! Em breve disponibilizaaremos essa opção !!!\n\n");
-
-    Tarefa tarefaCorrigida;
+  case 2:
     printf("Digite a nova descrição da tarefa:\n");
-    scanf("%s", tarefaCorrigida.descricao);
+    fgets(tarefaCorrigida.descricao, 150, stdin);
+    removeCaracterString(tarefaCorrigida.descricao);
 
     tarefaCorrigida.id = tarefaAlterar[0];
+    tarefaCorrigida.status = 0;
 
+    arquivoTarefas = fopen(caminho, "r");
+    arquivoTemporario = fopen("arqUsuario/temp.txt", "w"); // Cria um arquivo temporário que receberá as tarefas existentes
 
+    printf("DEBUG: %c - %s %d\n", tarefaCorrigida.id, tarefaCorrigida.descricao, tarefaCorrigida.status);
 
-    return 0;
+    if (arquivoTemporario == NULL || arquivoTarefas == NULL)
+    {
+      printf("Erro ao alterar descrição da tarefa.\n");
+      return 0;
+    }
 
+    while (fgets(linhaTemp, 150, arquivoTarefas) != NULL) // Lendo linha por linha do arquivo já existe do usuário e salvando no arquivo temporário
+    {
+      if (numLinha == linhaAlvo) // Se estiver na linha alvo (linha da tarefa que será alterada)
+        fprintf(arquivoTemporario, "%c - %s %d\n", tarefaCorrigida.id, tarefaCorrigida.descricao, tarefaCorrigida.status);
+      else
+        fprintf(arquivoTemporario, "%s", linhaTemp); // Arquivo temporário faz uma cópia da linha que está lendo no arquivo original
+
+      numLinha++; // Incrementa o número da linha
+    }
+
+      fclose(arquivoTarefas);
+      fclose(arquivoTemporario);
+
+    if (remove(caminho) != 0) // apago o arquivo original
+    {
+      printf("Erro ao apagar arquivo\n");
+      return 0;
+    }
+
+    if (rename("arqUsuario/temp.txt", caminho) != 0) // renomeio o arquivo temporário para tomar o lugar do anterior
+    {
+      printf("Erro ao renomear arquivo\n");
+      return 0;
+    }
+    return 1;
+  break;
   default:
     system("clear");
     printf("Opcao invalida. Tente outra vez.");
