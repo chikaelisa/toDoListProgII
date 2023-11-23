@@ -216,7 +216,7 @@ int alterarTarefa(char caminho[])
   printf("\n\nO que você deseja fazer?\n\n");
   printf("(1) - Marcar como feita\n");
   printf("(2) - Alterar descrição\n");
-  printf("(3) - Voltar\n");
+  printf("(3) - Escolher outra tarefa\n");
 
   printf("\nDigite sua opção: ");
 
@@ -318,13 +318,14 @@ int alterarTarefa(char caminho[])
       printf("Erro ao renomear arquivo\n");
       return 0;
     }
+    system("clear");
     return 1; // se chegou até aqui sem falhar, retorna sucesso
   case 3: 
     system("clear");
-    return 0;
+    alterarTarefa(caminho);
   default:
     system("clear");
-    printf("Opcao invalida. Tente outra vez.");
+    printf("Opcao invalida. Tente outra vez.\n");
     return 0;
   }
 }
