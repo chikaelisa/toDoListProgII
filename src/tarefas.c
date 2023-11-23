@@ -4,36 +4,38 @@
 #include "tarefas.h"
 #include "autenticar.h"
 
-void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
+void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[]) 
 {
+  //usuarioLogin -> usuário está vindo da função de inicio() na main.c
   Tarefa tarefa;
-  strcpy(caminhoLogin, usuarioLogin);
+  strcpy(caminhoLogin, usuarioLogin); 
 
   switch (opcao)
   {
-  case 0:
-    system("clear");
-    printf("\nSuas tarefas:\n");
-    consultarTarefas(obtemCaminho(caminhoLogin));
-    printf("\n");
-    iniciarTarefas(1, usuarioLogin, caminhoLogin);
-    return;
-  case 1:
-    printf("╔════════════════════════════════════════╗\n");
-    printf("║                  MENU                  ║\n");
-    printf("╚════════════════════════════════════════╝\n");
-    printf("(1) - Listar tarefas\n");
-    printf("(2) - Cadastrar tarefa\n");
-    printf("(3) - Atualizar tarefa\n");
-    printf("(4) - Excluir tarefa\n");
-    printf("(5) - Sair\n");
-    printf("\nDigite sua opcao: ");
-    scanf("%d", &opcao);
-    system("clear");
-    setbuf(stdin, NULL);
-    printf("\n");
-    iniciarTarefas(opcao + 1, usuarioLogin, caminhoLogin);
-    return;
+    //O programa inicia nessa opção
+    case 0:
+      system("clear");
+      printf("\nSuas tarefas:\n");
+      consultarTarefas(obtemCaminho(caminhoLogin));
+      printf("\n");
+      iniciarTarefas(1, usuarioLogin, caminhoLogin); // recursão: recomeça para essa função com a nova escolha do usuario
+      return; //Usa o return para quebrar a função e não ficar em loop
+    case 1:
+      printf("╔════════════════════════════════════════╗\n");
+      printf("║                  MENU                  ║\n");
+      printf("╚════════════════════════════════════════╝\n");
+      printf("(1) - Listar tarefas\n");
+      printf("(2) - Cadastrar tarefa\n");
+      printf("(3) - Atualizar tarefa\n");
+      printf("(4) - Excluir tarefa\n");
+      printf("(5) - Sair\n");
+      printf("\nDigite sua opcao: ");
+      scanf("%d", &opcao);
+      system("clear");
+      setbuf(stdin, NULL);
+      printf("\n");
+      iniciarTarefas(opcao + 1, usuarioLogin, caminhoLogin); //Soma mais 1 pois o switch case começa em 0
+      return; //Condição de parada da recirsovodade 
   case 2:
     printf("\n");
     printf("╔════════════════════════════════════════╗\n");
@@ -41,8 +43,8 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     printf("╚════════════════════════════════════════╝\n");
     consultarTarefas(obtemCaminho(caminhoLogin));
     printf("\n");
-    iniciarTarefas(1, usuarioLogin, caminhoLogin);
-    return;
+    iniciarTarefas(1, usuarioLogin, caminhoLogin); //Recursão: retorna para o menu principal
+    return; //Condição de parada da recirsovodade 
   case 3:
     printf("╔════════════════════════════════════════╗\n");
     printf("║            CADASTRO DE TAREFA          ║\n");
@@ -50,9 +52,9 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     printf("\nInforme a descricao da tarefa: ");
     fgets(tarefa.descricao, 150, stdin);
     retiraCaracterString(tarefa.descricao);
-    cadastrarTarefa(tarefa, obtemCaminho(caminhoLogin));
-    iniciarTarefas(1, usuarioLogin, caminhoLogin);
-    return;
+    cadastrarTarefa(tarefa, obtemCaminho(caminhoLogin)); //cadastrarTarefa pede o struct Tarefa e passa o caminho (Ex: "arqUsuario/Ennzo.txt")
+    iniciarTarefas(1, usuarioLogin, caminhoLogin); // recursão: retorna para o menu principal
+    return; // Condição de parada da recursividade
   case 4:
     printf("╔════════════════════════════════════════╗\n");
     printf("║            ATUALIZAR TAREFAS           ║\n");
@@ -88,11 +90,11 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
 
 int cadastrarTarefa(Tarefa tarefa, char caminho[])
 {
-  tarefa.status = 0;
+  tarefa.status = 0; //A tarefa por padrão vai ter o status como pendente (0)
   FILE *caminhoTarefas = fopen(caminho, "a");
-  FILE *ultimaTarefaId = fopen(caminho, "r");
+  FILE *ultimaTarefaId = fopen(caminho, "r"); //Abre esse arquivo para obter o ultimo ID
   tarefa.id = obtemUltimoIdTarefas(ultimaTarefaId);
-  fprintf(caminhoTarefas, "%c - %s %d\n", tarefa.id, tarefa.descricao, tarefa.status);
+  fprintf(caminhoTarefas, "%c - %s %d\n", tarefa.id, tarefa.descricao, tarefa.status); //Cadastrando uma nova tarefa no arquivo
   fclose(caminhoTarefas);
   printf("Tarefa cadastrada com sucesso!\n\n");
   return 1;
@@ -100,17 +102,18 @@ int cadastrarTarefa(Tarefa tarefa, char caminho[])
 
 void consultarTarefas(char caminho[])
 {
+  //caminho[] -> Caminho passado pela função obtemCaminho
   char tarefaAlterar[150];
   int controle = 0, ultimoIndice = 0;
-  FILE *caminhoConsultarTarefa = fopen(caminho, "r");
+  FILE *caminhoConsultarTarefa = fopen(caminho, "r"); //Abre o arquivo de tarefas do usuário para leitura
 
-  while (fgets(tarefaAlterar, 150, caminhoConsultarTarefa) != NULL)
+  while (fgets(tarefaAlterar, 150, caminhoConsultarTarefa) != NULL) //Lê linha por linha do arquivo
   {
-    ultimoIndice = obtemUltimoIndiceString(tarefaAlterar);
+    ultimoIndice = obtemUltimoIndiceString(tarefaAlterar); //Obtém o status da tarefa
     if (tarefaAlterar[ultimoIndice] == '0')
-      printf("%.*s ( )\n", ultimoIndice - 1, tarefaAlterar);
+      printf("%.*s ( )\n", ultimoIndice - 1, tarefaAlterar); //Pede para printar exatamente na posição do numero de status da tarefa no arquivo
     if (tarefaAlterar[ultimoIndice] == '1')
-      printf("%.*s (X)\n", ultimoIndice - 1, tarefaAlterar);
+      printf("%.*s (X)\n", ultimoIndice - 1, tarefaAlterar); //Pede para printar exatamente na posição do numero de status da tarefa no arquivo
     controle = 1;
   }
 
@@ -151,25 +154,25 @@ char obtemUltimoIdTarefas(FILE *arquivo)
   char ultimoId;
   int controle = 0;
 
-  while (fgets(tarefaAlterar, 150, arquivo) != NULL)
+  while (fgets(tarefaAlterar, 150, arquivo) != NULL) //Lê linha por linha do arquivo
   {
-    ultimoId = tarefaAlterar[0];
-    controle = 1;
+    ultimoId = tarefaAlterar[0]; //Obtém o ID da tarefa que sempre estará na primeira posição (0)
+    controle = 1; //Variável de controle
   }
 
   if (!controle)
-    return '1';
+    return '1'; //Retorna '1' caso não foi encontrado nenhum identificador para dar início a sequência
 
-  return ultimoId + 1;
+  return ultimoId + 1; //Retorna o ID encontrado e soma mais 1 para dar continuidade a sequência
 }
 
 char *obtemCaminho(char *username)
 {
-  char *caminhoTarefa = (char *)malloc(65 * sizeof(char));
-  strcpy(caminhoTarefa, "arqUsuario/");
-  strcat(caminhoTarefa, username);
-  strcat(caminhoTarefa, ".txt");
-  return caminhoTarefa;
+  char *caminhoTarefa = (char *)malloc(65 * sizeof(char)); // Aloca dinamicamente o tamanho da string de caminho de arquivo
+  strcpy(caminhoTarefa, "arqUsuario/"); //Copia a string "arqUsuario/" para a string caminhoTarefa
+  strcat(caminhoTarefa, username); //Concatena o usuário com a string anterior -> Ex: "arqUsuario/Enzo"
+  strcat(caminhoTarefa, ".txt"); //Concatena o ".txt" com a string anterior -> Ex: "arqUsuario/Enzo.txt"
+  return caminhoTarefa; //Retorna o caminho para encontrar o arquivo de tarefa daquele usuário
 }
 
 int alterarTarefa(char caminho[])
