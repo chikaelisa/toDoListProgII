@@ -69,13 +69,30 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     else
     {
       printf("Nenhuma tarefa alterada\n");
+      consultarTarefas(obtemCaminho(caminhoLogin));
       iniciarTarefas(1, usuarioLogin, caminhoLogin); // se ocorreu algum erro, retorna ao menu.
     }
     return;
   case 5:
-    system("clear");
-    printf("Você selecionou a opção 4, estamos trabalhando nela! Em breve\n\n");
-    iniciarTarefas(1, usuarioLogin, caminhoLogin);
+    printf("╔════════════════════════════════════════╗\n");
+    printf("║            EXCLUIR TAREFAS             ║\n");
+    printf("╚════════════════════════════════════════╝\n");
+    consultarTarefas(obtemCaminho(caminhoLogin));
+
+    if (excluirTarefa(obtemCaminho(caminhoLogin)))
+    {
+      printf("Tarefa excluida com sucesso!!!\n");
+      iniciarTarefas(2, usuarioLogin, caminhoLogin); // se deu tudo certo, consulta novamente as tarefas para mostrar a tarefa marcada como feita
+    }
+    else
+    {
+      printf("Nenhuma tarefa excluida\n");
+      iniciarTarefas(1, usuarioLogin, caminhoLogin); // se ocorreu algum erro, retorna ao menu.
+    }
+
+    // system("clear");
+    // printf("Você selecionou a opção 4, estamos trabalhando nela! Em breve\n\n");
+    // iniciarTarefas(1, usuarioLogin, caminhoLogin);
     return;
   case 6:
     system("clear");
@@ -326,6 +343,97 @@ int alterarTarefa(char caminho[])
   default:
     system("clear");
     printf("Opcao invalida. Tente outra vez.\n");
+    return 0;
+  }
+}
+
+int excluirTarefa(char caminho[])
+{
+  // retorna 0 se houver algum erro no caminho e 1 se a tarefa for alterada com sucesso.
+  char tarefaExcluir[150];
+  char idBusca;
+  int idEncontrado = 0, opcao = 0, linhaAlvo = 0;
+  FILE *arquivoTarefas = fopen(caminho, "r");
+  FILE *arquivoTemporario;
+
+  if (arquivoTarefas == NULL) // Verifica se o arquivo foi aberto corretamente
+  {
+    printf("Houve um problema para abrir o arquivo de tarefas. Tente novamente ou reinicie o programa. \n");
+    return 0;
+  }
+
+  printf("\n\nDigite o numero da tarefa que deseja remover:\n");
+
+  scanf("%c", &idBusca);
+
+  while (fgets(tarefaExcluir, 150, arquivoTarefas) != NULL) // Percorre linha por linha do arquivo
+  {
+    if (tarefaExcluir[0] == idBusca) // tarefaAlterar[0] -> Corresponde ao ID que sempre estará nessa posição
+    {
+      idEncontrado = 1;
+      break;
+    }
+    linhaAlvo++; // Incrementa para salvar o número da linha que está o ID
+  }
+  if (!idEncontrado)
+  {
+    printf("Não entramos a tarefa. Tente novamente. \n");
+    fclose(arquivoTarefas);
+    return 0;
+  }
+  fclose(arquivoTarefas);
+
+  printf("\n\nDeseja excluir essa tarefa?:\n %s\n", tarefaExcluir);
+
+  printf("(1) - Sim!\n");
+  printf("(2) - Cancelar\n");
+
+  scanf("%d", &opcao);
+
+  getchar(); // para remover o \n do buffer
+
+  int numLinha = 0;
+  char linhaTemp[150];
+
+  switch (opcao)
+  {
+  case 1:
+    arquivoTarefas = fopen(caminho, "r");
+    arquivoTemporario = fopen("arqUsuario/temp.txt", "w");
+
+    if (arquivoTemporario == NULL || arquivoTarefas == NULL)
+    {
+      printf("Erro ao excluir tarefa.\n");
+      return 0;
+    }
+
+    while (fgets(linhaTemp, 150, arquivoTarefas) != NULL) // Lendo linha por linha do arquivo já existe do usuário e salvando no arquivo temporário
+    {
+      if (numLinha != linhaAlvo)                     // a linha que contém a tarefa a ser removida
+        fprintf(arquivoTemporario, "%s", linhaTemp); // Arquivo temporário faz uma cópia da linha que está lendo no arquivo original
+
+      numLinha++; // Incrementa o número da linha
+    }
+    fclose(arquivoTarefas);
+    fclose(arquivoTemporario);
+
+    if (remove(caminho) != 0) // apago o arquivo original
+    {
+      printf("Erro ao apagar arquivo\n");
+      return 0;
+    }
+
+    if (rename("arqUsuario/temp.txt", caminho) != 0) // renomeio o arquivo temporário para tomar o lugar do anterior
+    {
+      printf("Erro ao renomear arquivo\n");
+      return 0;
+    }
+
+    system("clear");
+    return 1;
+
+  default:
+    system("clear");
     return 0;
   }
 }

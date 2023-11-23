@@ -2,4 +2,3 @@
 2 - parar de surtar 0
 3 - socorro 0
 4 - agr foi 0
-5 - bbbbbb 0

@@ -17,5 +17,6 @@ int obtemUltimoIndiceString(char *string);
 char obtemUltimoIdTarefas(FILE *arquivo);
 char* obtemCaminho(char *username);
 int alterarTarefa(char caminho[]);
+int excluirTarefa(char caminho[]);
 
 #endif //autenticar
