@@ -185,8 +185,6 @@ int alterarTarefa(char caminho[])
 
   printf("Digite o numero da tarefa que deseja alterar:\n");
 
-  // system("clear");
-
   scanf("%c", &idBusca);
 
   while (fgets(tarefaAlterar, 150, arquivoTarefas) != NULL)
@@ -265,6 +263,15 @@ int alterarTarefa(char caminho[])
 
   case 2: 
     printf("\n\n !!! Em breve disponibilizaaremos essa opção !!!\n\n");
+
+    Tarefa tarefaCorrigida;
+    printf("Digite a nova descrição da tarefa:\n");
+    scanf("%s", tarefaCorrigida.descricao);
+
+    tarefaCorrigida.id = tarefaAlterar[0];
+
+
+
     return 0;
 
   default:
