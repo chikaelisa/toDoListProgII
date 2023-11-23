@@ -58,7 +58,7 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     printf("║            ATUALIZAR TAREFAS           ║\n");
     printf("╚════════════════════════════════════════╝\n");
     consultarTarefas(obtemCaminho(caminhoLogin));
-    // alterarTarefa(obtemCaminho(caminhoLogin));
+
     if (alterarTarefa(obtemCaminho(caminhoLogin)))
     {
       printf("Tarefa atualizada com sucesso!!!\n");
@@ -66,7 +66,7 @@ void iniciarTarefas(int opcao, char usuarioLogin[], char caminhoLogin[])
     }
     else
     {
-      printf("Nao foi possivel alterar a tarefa\n");
+      printf("Nenhuma tarefa alterada\n");
       iniciarTarefas(1, usuarioLogin, caminhoLogin); // se ocorreu algum erro, retorna ao menu.
     }
     return;
@@ -213,6 +213,7 @@ int alterarTarefa(char caminho[])
   printf("\n\nO que você deseja fazer?\n\n");
   printf("(1) - Marcar como feita\n");
   printf("(2) - Alterar descrição\n");
+  printf("(3) - Voltar\n");
 
   printf("\nDigite sua opção: ");
 
@@ -220,7 +221,7 @@ int alterarTarefa(char caminho[])
 
   getchar(); // para remover o \n do buffer
 
-// ---- bloco de variáveis que vou usar no switch
+  // ---- bloco de variáveis que vou usar no switch
   int n = obtemUltimoIndiceString(tarefaAlterar);
   int numLinha = 0;
   char linhaTemp[150];
@@ -273,20 +274,16 @@ int alterarTarefa(char caminho[])
       printf("Tarefa já está marcada como feita!\n");
       return 1;
     }
-    break;
-
   case 2:
     printf("Digite a nova descrição da tarefa:\n");
     fgets(tarefaCorrigida.descricao, 150, stdin);
     removeCaracterString(tarefaCorrigida.descricao);
 
-    tarefaCorrigida.id = tarefaAlterar[0];
+    tarefaCorrigida.id = tarefaAlterar[0]; // copia o id da tarefa selecionada
     tarefaCorrigida.status = 0;
 
     arquivoTarefas = fopen(caminho, "r");
     arquivoTemporario = fopen("arqUsuario/temp.txt", "w"); // Cria um arquivo temporário que receberá as tarefas existentes
-
-    printf("DEBUG: %c - %s %d\n", tarefaCorrigida.id, tarefaCorrigida.descricao, tarefaCorrigida.status);
 
     if (arquivoTemporario == NULL || arquivoTarefas == NULL)
     {
@@ -304,8 +301,8 @@ int alterarTarefa(char caminho[])
       numLinha++; // Incrementa o número da linha
     }
 
-      fclose(arquivoTarefas);
-      fclose(arquivoTemporario);
+    fclose(arquivoTarefas);
+    fclose(arquivoTemporario);
 
     if (remove(caminho) != 0) // apago o arquivo original
     {
@@ -318,15 +315,13 @@ int alterarTarefa(char caminho[])
       printf("Erro ao renomear arquivo\n");
       return 0;
     }
-    return 1;
-  break;
+    return 1; // se chegou até aqui sem falhar, retorna sucesso
+  case 3: 
+    system("clear");
+    return 0;
   default:
     system("clear");
     printf("Opcao invalida. Tente outra vez.");
     return 0;
   }
-
-  fclose(arquivoTarefas);
-
-  return 1;
 }
